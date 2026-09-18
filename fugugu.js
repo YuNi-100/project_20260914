@@ -23,7 +23,8 @@ function dollar(usd){
         let totalUsd = usd * i;
         let krw = totalUsd * exchangeRate;
 
-        console.log("$${총달러} = ${계산된원화.toLocaleString()원");
+        console.log(`$${totalUsd} = ${krw.toLocaleString()}원`);
     }
-    console.log('===')
+    console.log("===");
 }
+
