@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src ="fugugu.js"></script>
+</head>
+
+<body>
+    <script>
+        //함수는 항상 앞에 function이 적혀있음.
+       //function구구 호출해줘., 
+    
+     fugugu2(99)  
+     let retValue = fugugu2(99);
+     console.log("fugugu2() : "+ retValue);
+     let retV2 = "aaa, bbb, cccc".substring(3,5)
+     console.log(retV2);
+
+     /*전역변수로 쓸 변수를 let이라고 선언
+     let 같은 이름으로 중복 선언 불가
+     let a1 =1;
+     let a2 =2;
+     let a4; */
+
+    
+    f1()
+    f2()
+
+    let f3 = function()    {
+
+    }
+
+    function f4(){
+
+    }
+
+    function f1(){
+        a4= 4;
+        console.log("===1")
+        let f2 = function(){
+            a4 =4;
+            console.log("===2")
+        };
+        f2();
+        console.log("===3")
+    }
+
+
+
+/*
+       function f1(){
+        a4 = 4;
+        console.log("===1")
+        var a3 = 3; //지역변수는 함수내부에서 var 선언
+
+        let f2 = function(){
+            a4 = 4;
+            var a3 =3; //지역변수는 함수내부에서 var 선언
+            
+        }
+    }
+
+    //지피티한테 함수 물어볼래..*/
+     </script>
+</body>
+</html>

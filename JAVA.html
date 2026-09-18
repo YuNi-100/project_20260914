@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!--스크립트 위치에 따른 확인 방법. 지금 헤드안에(타이틀 밑에)-->
+    <!--변수를 x라고 지정-->
+   <script>
+        window.alert("윈도우 경고창 테스트")
+        console.log("콘솔로그 테스트 F12눌러 console창에서 확인");
+        var 변수x=window.confirm("확인하시겠습니까?");
+        console.log(변수x);
+
+        var 변수=window.prompt("메시지")
+        console.log(변수);
+
+       
+        if (변수x){
+
+        }
+        //변수의 이름은 아무거나 지어도 되는데 안되는 용어들이 존재함 - 자바스크립트 언어
+        //ㄴ변수명, 각종이름은 예약어(keyword)는 사용할 수 없음. 띄어쓰기도 안됨 but 특수문자가능_
+            //F12누르면 Console 창에서 확인 가능한 부분
+        //예약어(keyword)를 외워야 합니다..ㅠ 색이 입혀진 단어들이 예약어(keyword)라고합니다.
+        
+        //alert -경고창=확인버튼만있음
+        //confirm-질문- 확인이랑 취소가 있음
+        //ㄴtrue 랑 false 가 나옴
+        //prompt 메시지입력-확인이랑 취소
+        //ㄴ 메시지입력란이 뜨고 취소라고 누르면 null이라고 나옴 / 메시지를 입력하면 입력한 메시지가 나옴 
+
+        //if(변수x){
+            //다음행동이 있어야함. 콘솔창에 true라고 나오거나  fales라고 나옴 }
+        //변수x=10
+        //y=5
+        //그래프를 그려줘
+    </script>
+
+    <link href="/CSS실험.css" rel="stylesheet">
+  
+</head>
+
+<body>
+    <p id="id01">안녕</p>
+
+    <!--바디안에-->
+    <!--document는 바디안에 있는 것들을 통틀어 지칭하는 태그(단어)-->
+    
+    <script>
+         console.log("콘솔로그 테스트 F12눌러 console창에서 확인")
+    </script>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/_gyultVTesk?si=k2IpcGB9sXwR2YTb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <p>방탄소년단 (BTS) '2.0' Official MV</p>
+   
+    <ol>hey hey</ol>
+    <li>이거야</li>
+    <ul>이거야 ㅎ</ul>
+    <form>
+        <div>
+            <label for="keyword">검색은 여기입니다.</label>
+        </div>
+        <input id="keyword" name="keyword" type="search">
+        <label for="region">지역</label>
+        <select id="region" name="region">
+            <option value="all">전체</option>
+            <option value="seoul">서울</option>
+        </select>
+        <gutton type="submit">적용</gutton>
+    </form>
+    <!--document 는 body 제일 끝에다가 하는게 좋다. 여기서 쓰는건 바디에 해당하는모든거 찾을수있다
+    중간에서 하면 중간위에로는 다 찾을수있다-->
+    
+    
+    <script>
+        /*
+        아래 내용 작성에 대한 설명을 여러줄로 할때 씁니다. 스크립트 안에
+        작성자 : 유니
+        검토자 : 강사님
+        검토일 :
+        기능 : getelement 학습확인
+        */
+        console.log("콘솔로그 테스트 F12눌러 console창에서 확인")
+        var 변수v1=document.getElementById("id01");
+        console.log(변수v1);
+
+        var 변수v2=document.getElementsByTagName("p");
+        console.log(변수v2);
+//getElementById 이거는 단수. 정확한 이름을 겨냥 
+//getElementsByTagName 이거는 복수 - 해당 단어나 스펠링이 들어가는 것을 찾음
+        var 변수v5=document.getElementsByClassName("c1");
+        var 변수v6=document.getSelection("#id01");
+        
+        var 변수v3 ="123"
+        console.log(변수v3+5)
+        console.log(변수v3+"5")
+        console.log(변수v3*5)
+    //둘중에 하나라도 문자가 있으면 +기호 앞뒤에 문자로 인식함
+    //*곱하기나 나누기, 빼기 기호가 나오면? 숫자로 인식해서 자동형변환해줍니다. 
+        var 변수v4 =123
+        console.log(변수v4+5)
+        console.log(변수v4+"5")
+        console.log(변수v4*5)
+
+    //밑에 var 써도 되는 부분인가? 
+        const d =new Date();
+        console.log(d);
+
+//2026.09.17
+
+    //문자열 함수들
+        var hello ="abc,def"
+        console.log(hello.length);
+        console.log(hello.split(","));
+        //hello.cubstin(2,4) 결과물 ""
+        console.log(hello.substring(2,4));
+        //자료형? 넘버? 2부터 4까지의 숫자를 쪼개서 반환? 하면 문자형태로 나타남.
+        //하이픈이 없더라고 구분을 할수있는 방법을 구분하는 정규표현식!
+        //숫자를 안적어도 됩니다. 안적으면 전부를 서치해서 찾아주는, 만약 3을 적으면 세번째숫자뒤로부터 찾아주는 역할
+        console.log(hello.substring("2"));
+
+            //숫자 Math 함수(메소드)들 - 클래스이름은 대문자로... 클래스 개체 (분홍색이 함수메소드들)
+            console.log(Math.max(2,6,3,8,7))
+            console.log(Math.min(2,6,3,8,7))
+            console.log(Math.abs(-0.34))
+            //제일 큰값을 찾아줘.. max - 결과를 숫자로 줍니다. 배열형태로 줍니다.[2,6,3,9,4]
+            //abs - 절대값을 구해주는 함수 / 메소드 - 파라메터를 넣을수 있다. 자료형
+            
+            //문자를 강제로 숫자로 변환시킬수있는 법 -아래참조- 스트링 대문자로 써야함..
+            var 변수v3 ="123"
+        console.log(변수v3+5)
+        console.log(변수v3+"5")
+        console.log(변수v3*5)
+        /////////////////////////////////
+        //console.log(Nunmber(변수v3)+5) - 이거 왜 잘못된 수식인가용?//////////////////////
+        console.log(parseInt("1.35"))
+        console.log(parseFloat("1.65"))
+        
+
+            var 변수v4 =123
+        console.log(변수v4+5)
+        console.log(변수v4+"5")
+        console.log(변수v4*5)
+       
+        
+        //산술 연산자는 내가 알고있은 쁠마곱나퍼센트, 단항연산자..? ++, --, +sign, -sign
+        //EX) 밑에 
+        console.log(5%3) // 2
+        console.log(5/3) // 1
+        console.log(String(변수v4 +5))
+
+        //console.log(5++)
+        //console.log(++5)
+        //console.log(+5)
+        //console.log(-5)
+
+        //관계연산자는 ~면으로 해석해야한답니다...>,<,>=,<=,!=,===,!==
+        //논리연산자는 &&,ㅣㅣ - 그리고, ~면, if라는 개념도 사용
+        //제어문 (조건문 반복문 분기문)
+
+        if(변수v4 >100)
+            {console.log("100보다 커요.")}
+        else {console.log("100보다 크지 않아요.")}
+
+        if(변수v4>100)
+            {console.log("100보다 커요.")}
+        else if(변수v4<50)
+            {console.log("50보다 작아요.")}
+        else{console.log("50보다 같거나 크고 100보다 같거나 작아요.")}
+
+        //위에 대괄호가 없다면, 한가지 방법으로는 사용 가능, 하지만 조건들을 여러게 붙일때는 꼭 대괄호가 필요
+        //줄바꿈이 있다면 ;세미콜로를 굳이 안써도 되는데 일자로 쓸때는 끝맺을을 표현하기 위해 꼭 세미콜로 써야함.
+
+
+        //반복문 var 변수앞에 붙여도 됨 
+           arr1 = "apple"
+           arr2 = "banana"
+           arr3 = "orange"
+           console.log(arr1);
+           console.log(arr2);
+           console.log(arr3);
+            ///////////버전 1 =위에. ///버전2= 밑에
+
+            var arr = ["apple","banana","orange"];
+        console.log(arr[0]);
+        console.log(arr[1]);
+        console.log(arr[2]);
+
+            for(i=0; i<arr.length; i++)
+            {console.log(arr[i])};
+            
+      
+            //i=0 이다라는 초기값을 설정하고, 증강값을 줘서 변화를 세팅함으로 결과가 나온다.
+            //i++ 은 1씩증가하게 해주세요. 반대로 i-- 는 1씩 빼주세요. 라고 해석한다.
+
+        var obj = {k1 :"seoul"
+                       ,k2 : "daejeon"
+                        , key :"이거이거"
+                        , k3 : 100
+                        , k4 :["apple" ,"banana"]
+        };
+        console.log(obj);
+        console.log(obj.key);
+        console.log(obj["key"]);
+        console.log(obj["k1"]);
+        console.log(obj.k1);
+
+        var v1 = "k1";
+        console.log(v1);
+        console.log(obj[v1]);
+        console.log(obj["k1"]);
+        console.log(obj.k1);
+
+            //속성명을 알때 : object. 다이렉트로 점찍고 사용
+            //속성명을 모를때 : 속성명을 알아와서 변수값에넣고 object["변수명"] 
+            //속성들을 다 꺼내고 싶을때, 다 보고 싶을때 : 반복문을 사용 하고싶을때
+            /////위에 있는 key 와 밑에 있는 key 를 지칭하는것이 다르다.... object["속성명"]
+            //따옴표를 넣어서 쓰면 변수명으로 인식하고 그냥 쓰면 속성명으로인식해서 원하는것
+//변수명을 쓸때는 따옴표를 넣으면 안된다.
+            //var v1 ="k1" //여기서 obj를 v1으로 바꿔야 하는건가?
+            //console.log(v1); <이렇게 쓰면 k1이 보여짐
+            //console.log(obj[v1]); < 이렇게 써도 k1 으로 보여짐
+            //console.log(obj["k1"]) <이라고 치면 k1으로 지정해서 보여짐.
+
+        for (var key in obj)
+            {console.log(key);
+            console.log(typeof(key));
+            //var key = "k1";
+            //var key = "k2";
+            console.log(obj[key]);
+            console.log(obj["key"]);
+            }
+            //
+                ///데이터 분석할때 위에꺼 많이 쓰임.
+            
+            
+        //json포맷(기본구조) = 언어가 아니라 데이터를 담고있는 모양의 형태 객체(object) : , 세트
+        //json은 웹에서 통용됨.json과 object와 조금 다른점은? = 제이슨은 문자형태를 유지해야함
+        //따옴표를 치고안치고의 차이
+
+        
+    //2026.09.18 
+        
+        v1 = 10
+        v2 = 20
+
+        v3 = {
+            k1:30,
+            k2:31
+        };
+        
+        var arr = ["apple","banana", function(){console.log("배열의 2번index에합수입니다.");}];
+
+        for (var i in arr) {
+
+            if(typeof( arr[i]) == "function") {
+                arr[i]();
+            } else {
+                console.log(arr[i]);
+            }
+        }
+    
+    //대괄호를 묶어서 사용해야 그 밑에 조건들을 추가해서 입력해야 인식.(구역을 묶어주는, 블럭으로 묶이는 행동)
+    
+        //fpr를 쓰고 if 가 붙고 그문장에 또 for를 쓰고 if 붙고 반복이 가능합니다.
+    
+    //구구단
+    //1~9 까지 변화하는데 반복함.
+    for(i=1; i<10; i++){
+        console.log(" 2 *" + i +"=" + 2*i)
+        }
+
+        // 구구단
+        for( dan = 2; dan <10; dan++){
+            for (i=1 ; i<10; i++){
+                console.log( dan + " * " + i + " = " + dan*i)
+            }
+        }
+
+            v1 = 10
+            var v2=10 //같은 이름으로 재선언 값변경 가능
+            let v3= 10 //같은 이름으로 재선언 안됨.
+            const v4 =10  //값 재할당 불가능한 상수
+            v1="abc"
+           // v4="이렇게 넣지마" //값 재할당 불가능한 상수
+           var v5 
+           let v6;
+            console.log(v5)
+            console.log(v6)
+            console.log(v3)
+            
+            {
+                console.log(v2)
+                var v2 = 20
+            console.log(v2)
+            var v2 = "bbb"
+            console.log(v2)            
+        }
+        console.log(v2)
+
+
+        
+        //같은 이름을 재선언 할수있는 경우 = 블럭별로 사용가능. 다른 대괄호.
+
+        //const 은 안에 내용을 바꾸지마, 변수를 바꾸지마 라는 느낌으로 습니다.
+        //숫자랑 문자가 있다? 그럼 연결자가 있다. 2(숫자) i(문자) =(연산자)
+            //var, let, const - 방을 만든거임.
+
+            
+
+    //모든 변수 앞에 var 안적어도됨. 내가 지금 적는이유는 눈에 잘보이게 하기위해서임-->
+        
+
+
+        
+        </script>
+        <p id="id02">안녕</p>
+</body>
+
+</html>
+
+
+<!--object VS JSON--> <!--데이터를 주고 받는 형태는 json이랑 XML(csv)-->
+        <!--{키1 : 251, 
+            키2: "문자넣어줌",   
+            키3 :[1,2,3],
+            키4 : {키5:값5}
+            키6 : true}
