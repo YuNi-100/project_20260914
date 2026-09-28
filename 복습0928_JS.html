@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let count = 0;
+        while (count < 5) {
+            console.log("This will run indefinitely!");
+            count++;
+        }
+        
+        for (let count = 0; count < 5; count++) {
+            counsole.log("This will run!");
+        }
+
+        //위에 let 코드와 for 코드가 정확하게 일치함. 같은 결과값임.
+        //초기값과 증감값이 늘 같이 존재함.
+
+        /*그 어떤 조건도 없이 무한 반복을 돌리는 코드
+        while (true) {
+            console.log("This will run indefinitely!");
+          }
+
+        여기서 무한으로 돌기때문에 밑에 코드처럼 써야 브레이크가 걸리고 무한으로
+        돌리는 현상이 없어짐. 횟수가 아니라 사용자 응답에 따른 반목문에 while 주로 사용.
+        ***while은 이렇게 쓰입니다. 
+        while (true) {
+            console.log("This will run indefinitely!");
+          }
+            let answer = window.prompt("계속 반복할까요? (y/n)");
+            if (answer=="n") {
+                break;
+            }
+            */
+        
+        //연산자
+        //산술 연산자 - 더하괴 빼기 곱하기 나누기 등 수학적 계산을 할때 사용하는것. +, - * , / %
+        let a = 10;
+        let b= 3;
+        console.log (a+b);
+        console.log ( a-b);
+        console.log (a*b);
+        console.log(a/b);
+        
+        //대입 및 복합 대입 연산자 - 변수에 값을 할당(저장) 하거나 기존 값에 계산 결과를 누적할때 사용
+        let score = 100; //단순 대입.
+        
+        score += 10; //score = score + 10 과 동일 (결과 110)
+        score -= 20; //score = score - 20 과 동일 (결과 90)
+        score *= 2; //score = score * 2 와 동일 (결과 180)
+        score /=3; //score = score / 3 과 동일 (결과 60) 
+
+        //비교 연산자 - 두 값을 비교하여 true 또는 false을 반환합니다.
+        //ps.자바스크립트에서는 타입(자료형)까지 엄격하게 비교하는 === 와!== 를 사용하는것을 권장
+
+        let x = 5 ;
+        let y = "5"; // 문자열
+
+        //동등 비교 
+        console.log (x == y); //true 값만 비교
+        console.log (x == y); //false 숫자 5와 문자열 "5"는 다름
+        console.log (x !== y); // true  (둘이 다름)
+
+
+        //대소 비교
+        console.log (x > 3); // true
+        console.log (x <= 5); //true
+
+        //논리 연산자 - 여러 조건을 조합하거나 반전시킬때 사용
+        let isAdult = true;
+        let hasTicket = false;
+
+        //AND 연산자 (&&) : 모두 트루여야 트루
+        console.log(isAdult && hasTicket); // true
+        //OR 연산자 (||) : 하나라도 트루이면 트루 ps. || = shift + \
+        console.log(isAdult || hasTicket); // true
+        //NOT 연산자 (!) : true/false 반전
+        console.log (!isAdult); //false
+
+        //삼항 연산자 - 조건식 ? 참일때값 : 거짓말일때 값 형태로 간단한 if 문을 한줄로 축양할때 유용합니다.
+        let age = 20;
+        //나이가 18세 이상이면 "성인", 아니면 "미성년자"
+        let result = (age >= 18) ? "성인입니다." : "미성년자입니다.";
+        console.log(result); //"성인입니다."
+
+        //단항 연산자 - ++(증강 연산자) / -- (감소연산자) : 변수의 값을 1 증가시키거나 감소시키는 역할
+        let count = 5;
+        count++; //결과 6
+        coung--; // 결과 5
+    </script>
+</body>
+</html>
