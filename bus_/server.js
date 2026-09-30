@@ -7,48 +7,52 @@ const app = express();
 const PORT = 3000;
 
 app.use(cors());
-
-// 1. public 폴더 내 정적 파일(index.html, bus.js 등) 제공
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 국토교통부 일반 인증키
+// 서울시 버스 API용 일반 인증키
 const API_KEY = '34db26780fd8bc7e84db2713f0a61a9ce4b77da820d107f0929b57a874f30bcd';
 
-// 2. http://localhost:3000 접속 시 public/index.html 파일 전송
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 3. 버스 정보 API
+// 서울시 버스 도착 정보 API (arsId 또는 stId 지원)
 app.get('/api/bus', async (req, res) => {
-  const { cityCode, nodeId } = req.query;
+  const { stId, arsId } = req.query;
 
-  if (!cityCode || !nodeId) {
-    return res.status(400).json({ error: 'cityCode와 nodeId 파라미터가 필요합니다.' });
+  const targetId = arsId || stId;
+
+  if (!targetId) {
+    return res.status(400).json({ error: 'stId 또는 arsId 파라미터가 필요합니다.' });
   }
 
   try {
+    // serviceKey를 encodeURIComponent로 인코딩 처리
     const serviceKey = encodeURIComponent(API_KEY);
-    const baseUrl = 'http://apis.data.go.kr/1613000/ArvlInfoInqireService/getSttnAcctoArvlPrearngeInfoList';
-    const targetUrl = `${baseUrl}?serviceKey=${serviceKey}&cityCode=${cityCode}&nodeId=${nodeId}&_type=json`;
+    const baseUrl = 'http://ws.bus.go.kr/api/rest/arrive/getArrInfoByStId';
+    const targetUrl = `${baseUrl}?serviceKey=${serviceKey}&stId=${targetId}&resultType=json`;
 
-    console.log(`📡 [API 요청]: ${targetUrl}`);
+    console.log(`📡 [서울시 API 요청]: ${targetUrl}`);
 
     const response = await axios.get(targetUrl);
+    console.log('✅ [서울시 API 응답 데이터]:', JSON.stringify(response.data, null, 2));
+
     res.json(response.data);
   } catch (error) {
-    console.error('❌ 백엔드 API 호출 에러:');
+    console.error('❌ 백엔드 에러 발생:');
     if (error.response) {
-      console.error('응답 상태:', error.response.status);
-      console.error('응답 데이터:', JSON.stringify(error.response.data, null, 2));
+      console.error('응답 상태 코드:', error.response.status);
+      console.error('응답 데이터:\n', JSON.stringify(error.response.data, null, 2));
     } else {
       console.error('에러 메시지:', error.message);
     }
 
-    res.status(500).json({ error: '버스 정보를 불러오는 중 서버 에러가 발생했습니다.' });
+    res.status(500).json({ error: '서울시 버스 정보를 불러오는 중 서버 에러가 발생했습니다.' });
   }
-});
+}
+)
 
+// 서버 실행
 app.listen(PORT, () => {
-  console.log(`🚀 Node 기반 서버 실행 중: http://localhost:${PORT}`);
+  console.log(`🚀 Node 기반 서버가 성공적으로 실행되었습니다! (http://localhost:${PORT})`);
 });

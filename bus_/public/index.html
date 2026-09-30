@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>실시간 버스 도착 정보</title>
+  <title>서울시 실시간 버스 도착 정보</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <style>
@@ -36,23 +36,22 @@
     
     <!-- 버스 정보 조회 카드 -->
     <div class="card-box mb-4">
-      <h4 class="fw-bold mb-1">🚌 실시간 버스 도착 정보</h4>
+      <h4 class="fw-bold mb-1">🚌 서울시 실시간 버스 도착 정보</h4>
       <p class="text-muted small mb-3">
-        국토교통부(TAGO) API를 활용해 정류소별 실시간 버스 도착 정보를 조회합니다.
+        서울특별시 버스정보시스템 API를 활용해 실시간 도착 정보를 조회합니다.
       </p>
 
-      <!-- 정류소 선택 드롭다운 (국토교통부 규격 cityCode, nodeId 설정) -->
-      <!-- public/index.html 파일 내 select 태그 부분 교체 -->
-<div class="mb-3">
-  <label for="busSelect" class="form-label fw-bold small text-secondary">정류소 선택</label>
-  <select id="busSelect" class="form-select">
-    <option value="" data-citycode="11" data-nodeid="101000003">서울 - 서울역버스환승센터(중)</option>
-    <option value="" data-citycode="11" data-nodeid="111000133">서울 - 시립서북병원.세현교회앞</option>
-    <option value="" data-citycode="11" data-nodeid="111000035">서울 - 연신내역 4번출구</option>
-    <option value="" data-citycode="11" data-nodeid="111000022">서울 - 연신내역 3번출구</option>
-    <option value="" data-citycode="11" data-nodeid="111000108">서울 - 연신내역.연서시장(중)</option>
-  </select>
-</div>
+      <!-- 정류소 선택 드롭다운 (서울시 정류소 stId 설정) -->
+      <div class="mb-3">
+        <label for="busSelect" class="form-label fw-bold small text-secondary">정류소 선택</label>
+        <select id="busSelect" class="form-select">
+          <option value="" data-stid="101000003">서울역버스환승센터(중)</option>
+          <option value="" data-stid="111000133">시립서북병원.세현교회앞</option>
+          <option value="" data-stid="111000035">연신내역 4번출구</option>
+          <option value="" data-stid="111000022">연신내역 3번출구</option>
+          <option value="" data-stid="111000108">연신내역.연서시장(중)</option>
+        </select>
+      </div>
 
       <!-- 조회 버튼 -->
       <div class="mb-3">
