@@ -1,72 +1,58 @@
-// 국토교통부 API 전용 정류소 정보 (nodeId)
-const STATIONS = {
-  seoul_station: { name: '서울역버스환승센터(중)', cityCode: '11', nodeId: 'BSB101000003' },
-  sehyun_church: { name: '시립서북병원.세현교회앞', cityCode: '11', nodeId: 'BSB111000133' },
-  yeonsinnae_4: { name: '연신내역 4번출구', cityCode: '11', nodeId: 'BSB111000035' },
-  yeonsinnae_3: { name: '연신내역 3번출구', cityCode: '11', nodeId: 'BSB111000022' },
-  yeonso_market: { name: '연신내역.연서시장(중)', cityCode: '11', nodeId: 'BSB111000108' }
-};
+document.getElementById('btnFetch').addEventListener('click', async () => {
+  const select = document.getElementById('busSelect');
+  const selectedOption = select.options[select.selectedIndex];
+  
+  const cityCode = selectedOption.getAttribute('data-citycode');
+  const nodeId = selectedOption.getAttribute('data-nodeid');
 
-const logBox = document.getElementById('logBox');
-const resultCard = document.getElementById('resultCard');
-const cityNameEl = document.getElementById('cityName');
-const cityTempEl = document.getElementById('cityTemp');
-const cityExtraEl = document.getElementById('cityExtra');
+  appendLog(`📡 백엔드로 API 요청 전송... (cityCode: ${cityCode}, nodeId: ${nodeId})`);
 
-function log(msg) {
-  const time = new Date().toLocaleTimeString();
-  logBox.textContent += `\n[${time}] ${msg}`;
+  try {
+    const response = await fetch(`/api/bus?cityCode=${cityCode}&nodeId=${nodeId}`);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || '버스 정보를 불러오지 못했습니다.');
+    }
+
+    appendLog(`✅ 응답 성공: 데이터 수신 완료`);
+    displayResult(data);
+  } catch (error) {
+    appendLog(`❌ 에러 발생: ${error.message}`);
+  }
+});
+
+function appendLog(message) {
+  const logBox = document.getElementById('logBox');
+  logBox.textContent += `\n> ${message}`;
   logBox.scrollTop = logBox.scrollHeight;
 }
 
 function clearLog() {
-  logBox.textContent = '> 콘솔이 초기화되었습니다.';
+  document.getElementById('logBox').textContent = '> 로그가 초기화되었습니다.';
 }
 
-document.getElementById('btnFetch').addEventListener('click', () => {
-  const stationKey = document.getElementById('citySelect').value;
-  const target = STATIONS[stationKey];
+function displayResult(data) {
+  const resultCard = document.getElementById('resultCard');
+  const busList = document.getElementById('busList');
+  resultCard.classList.remove('d-none');
 
-  const url = `http://localhost:3000/api/bus?cityCode=${target.cityCode}&nodeId=${target.nodeId}`;
+  const items = data?.response?.body?.items?.item;
+  if (!items) {
+    busList.innerHTML = '<p class="text-secondary small mb-0">현재 도착 예정인 버스가 없습니다.</p>';
+    return;
+  }
 
-  log(`1. fetch() 주문서 발송: ${target.name}`);
-  resultCard.classList.add('d-none');
-
-  fetch(url)
-    .then((response) => {
-      log(`2. 서버 응답 도착 (HTTP 상태 코드: ${response.status})`);
-      if (!response.ok) throw new Error(`HTTP 에러 발생: ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      const items = data.response?.body?.items?.item;
-
-      if (!items) {
-        log(`⚠️ 도착 예정인 버스 정보가 없거나 정류소 정보를 확인해주세요.`);
-        cityNameEl.textContent = target.name;
-        cityTempEl.textContent = `도착 정보 없음`;
-        cityExtraEl.textContent = `현재 운행 중인 버스가 없거나 정보를 불러올 수 없습니다.`;
-        resultCard.classList.remove('d-none');
-        return;
-      }
-
-      const firstBus = Array.isArray(items) ? items[0] : items;
-      const busName = firstBus.routeno;
-      const arrtime = Math.round(firstBus.arrtime / 60);
-      const arrprevstationcnt = firstBus.arrprevstationcnt;
-
-      log(`3. JSON 분석 완료! [${busName}번] ${arrtime}분 후 도착 예정`);
-
-      cityNameEl.textContent = `${target.name}`;
-      cityTempEl.textContent = `[${busName}번] ${arrtime}분 후 (${arrprevstationcnt}개 전)`;
-      cityExtraEl.textContent = `버스종류: ${firstBus.routetp || '시내버스'}`;
-      resultCard.classList.remove('d-none');
-    })
-    .catch((error) => {
-      log(`❌ 에러 발생: ${error.message}`);
-      alert(`버스 정보를 가져오지 못했습니다: ${error.message}`);
-    })
-    .finally(() => {
-      log(`4. fetch 요청 사이클 완료`);
-    });
-});
+  const itemList = Array.isArray(items) ? items : [items];
+  busList.innerHTML = itemList.map(bus => `
+    <div class="border-bottom py-2 text-start px-2">
+      <div class="d-flex justify-content-between align-items-center">
+        <strong>🚌 ${bus.routeno}번 버스</strong>
+        <span class="badge bg-primary">${Math.floor(bus.arrtime / 60)}분 후 도착</span>
+      </div>
+      <div class="text-muted small mt-1">
+        남은 정류장: ${bus.arrprevstationcnt}개 | 차종: ${bus.vehicletp || '일반'}
+      </div>
+    </div>
+  `).join('');
+}
