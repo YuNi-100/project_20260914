@@ -1,0 +1,26 @@
+{
+  "name": "project_20260914",
+  "version": "1.0.0",
+  "description": "",
+  "main": "0928_weather.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node 0928_weather.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuNi-100/project_20260914.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/YuNi-100/project_20260914/issues"
+  },
+  "homepage": "https://github.com/YuNi-100/project_20260914#readme",
+  "dependencies": {
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1"
+  }
+}
