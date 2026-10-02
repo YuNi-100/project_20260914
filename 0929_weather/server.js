@@ -2,6 +2,21 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
+/* =========================================================================
+   [MySQL 연동 추가 1] mysql2 모듈 불러오기 및 데이터베이스 커넥션 풀 설정
+   ========================================================================= */
+const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',          // 본인 MySQL 계정명
+  password: process.env.DB_PASSWORD || '1234',   // 본인 MySQL 비밀번호
+  database: process.env.DB_NAME || 'weather_db', // 1단계에서 생성한 DB 이름
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -56,10 +71,26 @@ app.get('/api/weather/promise', (req, res) => {
       return response.json(); // 본문 파싱 Promise 반환
     })
     .then((data) => {
+      const formatted = formatWeatherData(cityInfo.name, data);
+
+      /* =========================================================================
+         [MySQL 연동 추가 2] Promise 방식에서 날씨 조회 내역 DB(INSERT) 저장
+         ========================================================================= */
+      const userId = req.query.userId || 1; // 기본 사용자 ID 1
+      const insertQuery = `INSERT INTO weather_logs (user_id, city, temp, humidity) VALUES (?, ?, ?, ?)`;
+      
+      pool.execute(insertQuery, [userId, formatted.regionName, formatted.temperature, formatted.humidity])
+        .then(() => {
+          console.log(`✅ [DB 저장 완료 - Promise] 도시: ${formatted.regionName}, 기온: ${formatted.temperature}℃`);
+        })
+        .catch((dbErr) => {
+          console.error(`❌ [DB 저장 실패 - Promise]:`, dbErr.message);
+        });
+
       res.json({
         success: true,
         pattern: 'Promise (.then)',
-        data: formatWeatherData(cityInfo.name, data)
+        data: formatted
       });
     })
     .catch((error) => {
@@ -94,10 +125,20 @@ app.get('/api/weather/async', async (req, res) => {
     }
 
     const data = await response.json();
+    const formatted = formatWeatherData(cityInfo.name, data);
+
+    /* =========================================================================
+       [MySQL 연동 추가 3] async/await 방식에서 날씨 조회 내역 DB(INSERT) 저장
+       ========================================================================= */
+    const userId = req.query.userId || 1;
+    const insertQuery = `INSERT INTO weather_logs (user_id, city, temp, humidity) VALUES (?, ?, ?, ?)`;
+    await pool.execute(insertQuery, [userId, formatted.regionName, formatted.temperature, formatted.humidity]);
+    console.log(`✅ [DB 저장 완료 - async/await] 도시: ${formatted.regionName}, 기온: ${formatted.temperature}℃`);
+
     return res.json({
       success: true,
       pattern: 'async / await',
-      data: formatWeatherData(cityInfo.name, data)
+      data: formatted
     });
   } catch (error) {
     return res.status(500).json({
@@ -140,6 +181,17 @@ app.get('/api/weather/all', async (req, res) => {
     const results = await Promise.all(fetchPromises);
     const duration = Date.now() - startTime;
 
+    /* =========================================================================
+       [MySQL 연동 추가 4] Promise.all 방식에서 4개 도시 결과 일괄 DB(INSERT) 저장
+       ========================================================================= */
+    const userId = req.query.userId || 1;
+    const insertQuery = `INSERT INTO weather_logs (user_id, city, temp, humidity) VALUES (?, ?, ?, ?)`;
+    
+    for (const item of results) {
+      await pool.execute(insertQuery, [userId, item.regionName, item.temperature, item.humidity]);
+    }
+    console.log(`✅ [DB 저장 완료 - Promise.all] 4개 도시 일괄 저장 성공`);
+
     return res.json({
       success: true,
       durationMs: duration,
@@ -153,9 +205,56 @@ app.get('/api/weather/all', async (req, res) => {
   }
 });
 
+/* =========================================================================
+   [MySQL 연동 추가 5] JOIN 활용 API: 사용자 정보와 날씨 조회 기록 함께 가져오기
+   ========================================================================= */
+app.get('/api/users/history', async (req, res) => {
+  try {
+    const joinQuery = `
+      SELECT 
+        u.id AS user_id,
+        u.name AS user_name,
+        w.city,
+        w.temp,
+        w.humidity,
+        w.created_at AS searched_at
+      FROM users u
+      JOIN weather_logs w ON u.id = w.user_id
+      ORDER BY w.created_at DESC;
+    `;
+    const [rows] = await pool.query(joinQuery);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('❌ JOIN 쿼리 에러:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+/* =========================================================================
+   [MySQL 연동 추가 6] GROUP BY 활용 API: 도시별 평균 기온 및 조회 횟수 집계
+   ========================================================================= */
+app.get('/api/weather/stats', async (req, res) => {
+  try {
+    const groupByQuery = `
+      SELECT 
+        city,
+        COUNT(id) AS total_searches,
+        ROUND(AVG(temp), 1) AS avg_temperature,
+        ROUND(AVG(humidity), 1) AS avg_humidity
+      FROM weather_logs
+      GROUP BY city;
+    `;
+    const [rows] = await pool.query(groupByQuery);
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('❌ GROUP BY 쿼리 에러:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`====================================================`);
-  console.log(`  OpenWeather Node.js 서버 실행 완료`);
-  console.log(`  주소: <http://localhost>:${PORT}`);
+  console.log(`  OpenWeather + MySQL Node.js 서버 실행 완료`);
+  console.log(`  주소: http://localhost:${PORT}`);
   console.log(`====================================================`);
 });

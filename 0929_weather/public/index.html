@@ -177,6 +177,31 @@
         displayArea.innerHTML = `<div class="col-12 text-center text-danger">${err.message}</div>`;
       }
     });
+
+    // 1. 날씨 조회 및 DB 저장 (INSERT)
+  async function searchAndSaveWeather(city) {
+    const response = await fetch('/api/weather/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: 1, city: city })
+    });
+    const result = await response.json();
+    console.log('저장 결과:', result);
+  }
+
+  // 2. JOIN 데이터 조회 (사용자별 조회 기록)
+  async function getHistory() {
+    const response = await fetch('/api/users/history');
+    const result = await response.json();
+    console.log('JOIN 데이터:', result.data);
+  }
+
+  // 3. GROUP BY 데이터 조회 (도시별 평균/통계)
+  async function getStats() {
+    const response = await fetch('/api/weather/stats');
+    const result = await response.json();
+    console.log('GROUP BY 통계:', result.data);
+  }
   </script>
 </body>
 </html>
