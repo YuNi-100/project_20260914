@@ -13,10 +13,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // ========================================
-// 공공데이터포털 서울 버스 API 인증키
+// 공공데이터포털 인증키
 // ========================================
 
 const SERVICE_KEY = process.env.SEOUL_BUS_API_KEY;
+
+console.log(
+  '🔑 SERVICE_KEY 로드:',
+  SERVICE_KEY ? '성공' : '실패'
+);
 
 
 // ========================================
@@ -33,30 +38,34 @@ app.get('/', (req, res) => {
 
 
 // ========================================
-// 서울 버스 실시간 도착정보
+// 정류소별 실시간 버스 도착정보
 //
-// 사용:
-// /api/bus?busRouteId=100100118
+// 사용 예:
+// /api/bus?arsId=12121
 // ========================================
 
 app.get('/api/bus', async (req, res) => {
 
-  const { busRouteId, arsId, stId } = req.query;
+  const { arsId } = req.query;
 
 
-  // --------------------------------------
-  // busRouteId 검사
-  // --------------------------------------
-
-  if (!busRouteId) {
+  if (!arsId) {
 
     return res.status(400).json({
-
       success: false,
+      items: [],
+      error: 'arsId가 필요합니다.'
+    });
 
-      error:
-        'busRouteId가 필요합니다.'
+  }
 
+
+  if (!SERVICE_KEY) {
+
+    return res.status(500).json({
+      success: false,
+      items: [],
+      error: '.env에서 인증키를 불러오지 못했습니다.'
     });
 
   }
@@ -65,32 +74,23 @@ app.get('/api/bus', async (req, res) => {
   try {
 
     console.log('');
-    console.log('=================================');
-    console.log('🚌 서울 버스 도착정보 조회');
-    console.log('=================================');
-
-    console.log('busRouteId:', busRouteId);
-
-    if (arsId) {
-      console.log('ARS-ID:', arsId);
-    }
-
-    if (stId) {
-      console.log('정류소 ID:', stId);
-    }
+    console.log('================================');
+    console.log('🚌 정류소 실시간 버스 도착정보');
+    console.log('================================');
+    console.log('ARS-ID:', arsId);
 
 
     // ========================================
-    // 서울 버스 도착정보 API
+    // 서울 버스 정류소정보 API
     // ========================================
 
     const targetUrl =
-      'http://ws.bus.go.kr/api/rest/arrive/getArrInfoByRouteAll';
+      'http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid';
 
 
-    // --------------------------------------
+    // ========================================
     // API 요청
-    // --------------------------------------
+    // ========================================
 
     const response = await axios.get(targetUrl, {
 
@@ -98,7 +98,7 @@ app.get('/api/bus', async (req, res) => {
 
         serviceKey: SERVICE_KEY,
 
-        busRouteId: busRouteId
+        arsId: arsId
 
       },
 
@@ -116,23 +116,18 @@ app.get('/api/bus', async (req, res) => {
     // XML → JavaScript Object
     // ========================================
 
-    const parsed = await xml2js.parseStringPromise(
-      response.data,
-      {
-        explicitArray: false,
-        trim: true
-      }
-    );
-
-
-    // 디버깅용
-    console.log(
-      JSON.stringify(parsed, null, 2)
-    );
+    const parsed =
+      await xml2js.parseStringPromise(
+        response.data,
+        {
+          explicitArray: false,
+          trim: true
+        }
+      );
 
 
     // ========================================
-    // ServiceResult 확인
+    // ServiceResult
     // ========================================
 
     const serviceResult =
@@ -141,9 +136,7 @@ app.get('/api/bus', async (req, res) => {
 
     if (!serviceResult) {
 
-      console.log(
-        '❌ ServiceResult가 없습니다.'
-      );
+      console.log('❌ ServiceResult 없음');
 
       return res.status(502).json({
 
@@ -160,7 +153,7 @@ app.get('/api/bus', async (req, res) => {
 
 
     // ========================================
-    // API 결과 코드 확인
+    // API 상태 확인
     // ========================================
 
     const header =
@@ -173,7 +166,7 @@ app.get('/api/bus', async (req, res) => {
 
     const headerMsg =
       header?.headerMsg ||
-      '응답 메시지가 없습니다.';
+      '응답 메시지 없음';
 
 
     console.log(
@@ -199,7 +192,7 @@ app.get('/api/bus', async (req, res) => {
 
 
     // ========================================
-    // 실제 버스 데이터
+    // 버스 도착정보
     // ========================================
 
     let items =
@@ -209,25 +202,27 @@ app.get('/api/bus', async (req, res) => {
     if (!items) {
 
       console.log(
-        '⚠️ 도착정보가 없습니다.'
+        '⚠️ 현재 버스 도착정보 없음'
       );
 
       return res.json({
 
         success: true,
 
+        count: 0,
+
         items: [],
 
         message:
-          '현재 도착 예정 버스가 없습니다.'
+          '현재 도착 예정인 버스가 없습니다.'
 
       });
 
     }
 
 
-    // itemList가 하나면 객체,
-    // 여러 개면 배열로 들어오기 때문에 통일
+    // 버스 한 대만 있을 경우에도
+    // 항상 배열로 통일
     if (!Array.isArray(items)) {
 
       items = [items];
@@ -236,57 +231,27 @@ app.get('/api/bus', async (req, res) => {
 
 
     console.log(
-      `📦 API 데이터: ${items.length}건`
+      `📦 도착정보: ${items.length}건`
     );
 
 
     // ========================================
-    // 정류소 필터링
-    // ========================================
-
-    if (arsId) {
-
-      items = items.filter(bus =>
-
-        String(bus.arsId) ===
-        String(arsId)
-
-      );
-
-    }
-
-
-    if (stId) {
-
-      items = items.filter(bus =>
-
-        String(bus.stId) ===
-        String(stId)
-
-      );
-
-    }
-
-
-    console.log(
-      `📍 정류소 필터 후: ${items.length}건`
-    );
-
-
-    // ========================================
-    // 필요한 데이터만 정리
+    // 프론트에서 필요한 데이터만 정리
     // ========================================
 
     const result = items.map(bus => ({
 
+      // 버스 번호
       rtNm:
         bus.rtNm ||
         bus.busRouteAbrv ||
-        '',
+        '버스',
 
+      // 노선 ID
       busRouteId:
         bus.busRouteId || '',
 
+      // 정류소
       arsId:
         bus.arsId || '',
 
@@ -296,31 +261,59 @@ app.get('/api/bus', async (req, res) => {
       stNm:
         bus.stNm || '',
 
+
+      // 운행 방향
+      direction:
+        bus.adirection || '',
+
+
+      // 첫 번째 버스
       arrmsg1:
         bus.arrmsg1 ||
         '도착 정보 없음',
 
+
+      // 두 번째 버스
       arrmsg2:
         bus.arrmsg2 ||
         '다음 버스 정보 없음',
 
+
+      // 현재 첫 번째 버스 위치
       stationNm1:
         bus.stationNm1 || '',
 
+
+      // 현재 두 번째 버스 위치
       stationNm2:
         bus.stationNm2 || '',
 
+
+      // 예상 소요시간(초)
       traTime1:
         bus.traTime1 || '',
 
       traTime2:
-        bus.traTime2 || ''
+        bus.traTime2 || '',
+
+
+      // 첫차 / 막차
+      firstTm:
+        bus.firstTm || '',
+
+      lastTm:
+        bus.lastTm || ''
 
     }));
 
 
+    console.log(
+      `✅ 프론트엔드 전달: ${result.length}건`
+    );
+
+
     // ========================================
-    // JSON으로 프론트에 전달
+    // JSON 응답
     // ========================================
 
     return res.json({
@@ -328,6 +321,8 @@ app.get('/api/bus', async (req, res) => {
       success: true,
 
       count: result.length,
+
+      station: result[0]?.stNm || '',
 
       items: result
 

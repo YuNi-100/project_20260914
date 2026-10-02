@@ -11,8 +11,8 @@ document.getElementById('btnFetch').addEventListener('click', async () => {
   try {
 
   
-    const response = await fetch(
-  `/api/bus?busRouteId=100100118&arsId=${encodeURIComponent(arsId)}`
+  const response = await fetch(
+  `/api/bus?arsId=${encodeURIComponent(arsId)}`
 );
     const data = await response.json();
 
