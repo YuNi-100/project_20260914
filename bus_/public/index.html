@@ -3,81 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>서울시 실시간 버스 도착 정보</title>
+  <title>서울시 버스 도착 정보 (열린데이터광장)</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
   <style>
-    body {
-      background-color: #f8fafc;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    .card-box {
-      background: #ffffff;
-      padding: 24px;
-      border-radius: 14px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-    }
-    .console-box {
-      background: #0f172a;
-      color: #38bdf8;
-      font-family: Consolas, Monaco, monospace;
-      font-size: 13px;
-      padding: 16px;
-      border-radius: 8px;
-      height: 180px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
+    body { background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .card-box { background: #ffffff; padding: 24px; border-radius: 14px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06); }
+    .console-box { background: #0f172a; color: #38bdf8; font-family: Consolas, Monaco, monospace; font-size: 13px; padding: 16px; border-radius: 8px; height: 180px; overflow-y: auto; white-space: pre-wrap; }
   </style>
 </head>
-
 <body class="py-5">
   <div class="container" style="max-width: 680px;">
-    
-    <!-- 버스 정보 조회 카드 -->
     <div class="card-box mb-4">
       <h4 class="fw-bold mb-1">🚌 서울시 실시간 버스 도착 정보</h4>
-      <p class="text-muted small mb-3">
-        서울특별시 버스정보시스템 API를 활용해 실시간 도착 정보를 조회합니다.
-      </p>
+      <p class="text-muted small mb-3">서울 열린데이터광장 API 기준 조회 시스템입니다.</p>
 
-      <!-- 정류소 선택 드롭다운 (서울시 정류소 stId 설정) -->
       <div class="mb-3">
         <label for="busSelect" class="form-label fw-bold small text-secondary">정류소 선택</label>
         <select id="busSelect" class="form-select">
-          <option value="" data-stid="101000003">서울역버스환승센터(중)</option>
-          <option value="" data-stid="111000133">시립서북병원.세현교회앞</option>
-          <option value="" data-stid="111000035">연신내역 4번출구</option>
-          <option value="" data-stid="111000022">연신내역 3번출구</option>
-          <option value="" data-stid="111000108">연신내역.연서시장(중)</option>
+          <option value="02006">서울역버스환승센터(중)</option>
+          <option value="12217">시립서북병원.세현교회앞</option>
+          <option value="12119">연신내역 4번출구</option>
+          <option value="12106">연신내역 3번출구</option>
+          <option value="12018">연신내역.연서시장(중)</option>
         </select>
       </div>
 
-      <!-- 조회 버튼 -->
       <div class="mb-3">
-        <button id="btnFetch" class="btn btn-primary fw-bold w-100 py-2">
-          실시간 버스 도착 정보 조회하기
-        </button>
+        <button id="btnFetch" class="btn btn-primary fw-bold w-100 py-2">실시간 버스 도착 정보 조회하기</button>
       </div>
 
-      <!-- 버스 정보 결과 출력 카드 -->
       <div id="resultCard" class="p-3 bg-light rounded text-center d-none">
         <h6 class="fw-bold mb-2" id="stopName">버스 도착 예정 목록</h6>
         <div class="my-2" id="busList"></div>
       </div>
     </div>
 
-    <!-- 실행 로그 창 -->
     <div class="card-box">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="fw-bold small text-dark">📜 실행 로그</span>
         <button class="btn btn-sm btn-outline-secondary" onclick="clearLog()">초기화</button>
       </div>
-      <div class="console-box" id="logBox">> 버튼을 누르면 백엔드 /api/bus 호출이 실행됩니다.</div>
+      <div class="console-box" id="logBox">> 조회 버튼을 눌러주세요.</div>
     </div>
-
   </div>
-
   <script src="bus.js"></script>
 </body>
 </html>
