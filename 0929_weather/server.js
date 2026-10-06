@@ -8,15 +8,28 @@ const path = require('path');
 const mysql = require('mysql2/promise');
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',          // 본인 MySQL 계정명
-  password: process.env.DB_PASSWORD || '1234',   // 본인 MySQL 비밀번호
-  database: process.env.DB_NAME || 'weather_db', // 1단계에서 생성한 DB 이름
+  host: process.env.DB_HOST || '127.0.0.1',
+  port: Number(process.env.DB_PORT) || 3306,
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '1234',
+  database: process.env.DB_NAME || 'weather_db',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
 
+/*test*/
+pool.getConnection()
+  .then(connection => {
+    console.log('✅ MySQL 연결 성공');
+    connection.release();
+  })
+  .catch(error => {
+    console.error('❌ MySQL 연결 실패');
+    console.error(error);
+  });
+
+/* mmmmmmmmmmmmmmmmmmmmmmmmm */
 const app = express();
 const PORT = process.env.PORT || 8080;
 
